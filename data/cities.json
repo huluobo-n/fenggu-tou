@@ -1,0 +1,243 @@
+{
+  "meta": {
+    "fetchedAt": "2026-11-04",
+    "timezone": "Asia/Shanghai",
+    "disclaimer": "数据来自公开政策与地方发改委/政务页整理，仅供参考测算；实际以当地供电公司账单及国网口径为准。政策可能调整，使用前请核对。",
+    "notes": [
+      "MVP 默认按一档（第一阶梯）「一户一表」居民生活用电估算，未模拟全年跨档复杂结算。",
+      "上海一档未分时电价与峰电价相同，任意谷电占比即 theoretically 不亏；二三档另计。",
+      "济南区分采暖季/非采暖季时段与谷价，工具默认按「非采暖季」测算，可切换。",
+      "郑州变更周期官方表述为「不少于三个月」，与多数省份「一年内不得变更」不同。",
+      "上海「一年内难改回」官方表述未在本轮检索到明确文件，UI 标待核对。"
+    ]
+  },
+  "cities": [
+    {
+      "id": "hangzhou",
+      "name": "杭州",
+      "province": "浙江",
+      "regionCode": "浙",
+      "verified": true,
+      "flat": {
+        "label": "单一制/未开峰谷（一档）",
+        "price": 0.538
+      },
+      "tou": {
+        "label": "峰谷分时（一档）",
+        "periods": [
+          { "name": "峰", "hours": "08:00–22:00", "hoursPerDay": 14, "price": 0.568 },
+          { "name": "谷", "hours": "22:00–次日08:00", "hoursPerDay": 10, "price": 0.288 }
+        ]
+      },
+      "tiersNote": "年用电≤2760 一档；2761–4800 二档峰/谷 0.618/0.338；≥4801 三档 0.868/0.588。未开峰谷一/二/三档 0.538/0.588/0.838。",
+      "criticalValleyShare": 0.107,
+      "criticalNote": "谷电占比约超过 10.7%（约 11%）通常比未开更划算（一档近似）。",
+      "apply": {
+        "optional": true,
+        "effective": "申请成功后次月起执行",
+        "lockPeriod": "选定后一年内通常不得变更/停止",
+        "how": "网上国网 App「峰谷电变更」或供电营业厅，需户号与户主身份信息"
+      },
+      "sources": [
+        {
+          "title": "浙江电网销售电价表（含居民分时时段说明）",
+          "url": "https://zjjcmspublic.oss-cn-hangzhou-zwynet-d01-a.internet.cloud.zj.gov.cn/jcms_files/jcms1/web2745/site/attach/0/3a51f95ce5ce40dfac19f0ff7cf41503.pdf",
+          "fetchedAt": "2026-11-04"
+        },
+        {
+          "title": "海曙区政府转述网上国网居民峰谷标准（2026-05）",
+          "url": "https://www.haishu.gov.cn/col/col1229100020/art/2026/art_5c91b58573ed42e6859043ef10da673e.html",
+          "fetchedAt": "2026-11-04"
+        },
+        {
+          "title": "义乌市政府：居民峰谷计算与一年限制说明（2025-09）",
+          "url": "https://www.yw.gov.cn/art/2025/9/12/art_1229142865_1825767.html",
+          "fetchedAt": "2026-11-04"
+        }
+      ]
+    },
+    {
+      "id": "nanjing",
+      "name": "南京",
+      "province": "江苏",
+      "regionCode": "苏",
+      "verified": true,
+      "flat": {
+        "label": "未开峰谷/平时段（一档）",
+        "price": 0.5283
+      },
+      "tou": {
+        "label": "峰谷分时（一档，先峰谷后阶梯）",
+        "periods": [
+          { "name": "峰", "hours": "08:00–21:00", "hoursPerDay": 13, "price": 0.5583 },
+          { "name": "谷", "hours": "21:00–次日08:00", "hoursPerDay": 11, "price": 0.3583 }
+        ]
+      },
+      "tiersNote": "年档约按月 230/400 度折年：≤2760 / 2761–4800 / >4800。二档峰谷约 +0.05，三档 +0.30。合表等另计。",
+      "criticalValleyShare": 0.15,
+      "criticalNote": "谷电占比约超过 15% 通常比未开更划算（一档近似）。",
+      "apply": {
+        "optional": true,
+        "effective": "申请成功后次月起执行（以供电公司办理为准）",
+        "lockPeriod": "一经选定，一年内不得变更",
+        "how": "网上国网 App「峰谷电变更」或营业厅"
+      },
+      "sources": [
+        {
+          "title": "南京民生价格手册（2026版）PDF — 市发改委",
+          "url": "https://fgw.nanjing.gov.cn/njsfzhggwyh/202601/P020260107586054627681.pdf",
+          "fetchedAt": "2026-11-04"
+        },
+        {
+          "title": "南京本地宝转述 2026 居民电费标准",
+          "url": "https://nj.bendibao.com/live/20231019/160159.shtm",
+          "fetchedAt": "2026-11-04"
+        },
+        {
+          "title": "扬子晚报：江苏居民峰谷需申请；一档峰/谷/平示例",
+          "url": "https://www.yangtse.com/news/yszzn/202503/t20250326_190905.html",
+          "fetchedAt": "2026-11-04"
+        }
+      ]
+    },
+    {
+      "id": "jinan",
+      "name": "济南",
+      "province": "山东",
+      "regionCode": "鲁",
+      "verified": true,
+      "flat": {
+        "label": "未开峰谷（一档）",
+        "price": 0.5469
+      },
+      "tou": {
+        "label": "峰谷分时（一档，默认非采暖季）",
+        "seasons": {
+          "nonHeating": {
+            "label": "非采暖季（4–10月）",
+            "periods": [
+              { "name": "峰", "hours": "08:00–22:00", "hoursPerDay": 14, "price": 0.5769 },
+              { "name": "谷", "hours": "22:00–次日08:00", "hoursPerDay": 10, "price": 0.3769 }
+            ]
+          },
+          "heating": {
+            "label": "采暖季（11月1日–次年3月31日）",
+            "periods": [
+              { "name": "峰", "hours": "08:00–20:00", "hoursPerDay": 12, "price": 0.5769 },
+              { "name": "谷", "hours": "20:00–次日08:00", "hoursPerDay": 12, "price": 0.3469 }
+            ]
+          }
+        },
+        "periods": [
+          { "name": "峰", "hours": "08:00–22:00（非采暖）", "hoursPerDay": 14, "price": 0.5769 },
+          { "name": "谷", "hours": "22:00–次日08:00（非采暖）", "hoursPerDay": 10, "price": 0.3769 }
+        ]
+      },
+      "tiersNote": "一档年≤2520 度左右（以当地为准）；峰=+0.03、谷=−0.17（采暖季谷−0.20）；二/三档在一档峰谷上再 +0.05/+0.30。",
+      "criticalValleyShare": 0.15,
+      "criticalNote": "非采暖季一档：谷电占比约超过 15% 通常更划算；采暖季谷更长更便宜，临界更低。",
+      "apply": {
+        "optional": true,
+        "effective": "申请次月起执行",
+        "lockPeriod": "以年度为周期，1年内不作调整",
+        "how": "网上国网→更多→办理→峰谷电变更；或营业厅/政务大厅，免费换表"
+      },
+      "sources": [
+        {
+          "title": "山东省居民生活分时电价政策解读（烟台市发改委转载 2025-04）",
+          "url": "https://fgw.yantai.gov.cn/art/2025/4/21/art_52219_2909514.html",
+          "fetchedAt": "2026-11-04"
+        },
+        {
+          "title": "威海市发改委同题解读（2026-06）",
+          "url": "https://fgw.weihai.gov.cn/art/2026/6/22/art_53888_6434167.html",
+          "fetchedAt": "2026-11-04"
+        }
+      ]
+    },
+    {
+      "id": "zhengzhou",
+      "name": "郑州",
+      "province": "河南",
+      "regionCode": "豫",
+      "verified": true,
+      "flat": {
+        "label": "未开峰谷（一档阶梯）",
+        "price": 0.56
+      },
+      "tou": {
+        "label": "峰谷分时（一档基础上浮动）",
+        "periods": [
+          { "name": "峰", "hours": "08:00–22:00", "hoursPerDay": 14, "price": 0.59 },
+          { "name": "谷", "hours": "22:00–次日08:00", "hoursPerDay": 10, "price": 0.44 }
+        ]
+      },
+      "tiersNote": "一档年≤2160（0.56）、二档 2161–3120（0.61）、三档≥3121（0.86）。峰谷在对应档位上 +0.03/−0.12。煤改电采暖季时段不同。",
+      "criticalValleyShare": 0.2,
+      "criticalNote": "一档近似：谷电占比约超过 20% 通常更划算。",
+      "apply": {
+        "optional": true,
+        "effective": "以供电公司办理为准（常见为选定后调整到位）",
+        "lockPeriod": "执行变更周期不少于三个月（河南口径，非一年）",
+        "how": "网上国网或当地供电营业厅自愿申请"
+      },
+      "sources": [
+        {
+          "title": "郑州市政策问答平台：居民生活用电价格",
+          "url": "https://public.zhengzhou.gov.cn/zcwdpt/10014207.jhtml",
+          "fetchedAt": "2026-11-04"
+        },
+        {
+          "title": "郑州转发豫发改价管〔2024〕283号：继续执行现行居民分时电价",
+          "url": "https://public.zhengzhou.gov.cn/D300201X/8452948.jhtml",
+          "fetchedAt": "2026-11-04"
+        }
+      ]
+    },
+    {
+      "id": "shanghai",
+      "name": "上海",
+      "province": "上海",
+      "regionCode": "沪",
+      "verified": true,
+      "pendingChecks": ["lockPeriod官方一年限制未在本轮检索到明确条文"],
+      "flat": {
+        "label": "未分时（一档）",
+        "price": 0.617
+      },
+      "tou": {
+        "label": "峰谷分时（一档）",
+        "periods": [
+          { "name": "峰", "hours": "06:00–22:00", "hoursPerDay": 16, "price": 0.617 },
+          { "name": "谷", "hours": "22:00–次日06:00", "hoursPerDay": 8, "price": 0.307 }
+        ]
+      },
+      "tiersNote": "年 0–3120 一档；3121–4800 二档未分时 0.667、峰/谷 0.677/0.337；>4800 未分时 0.917、峰/谷 0.977/0.487。",
+      "criticalValleyShare": 0,
+      "criticalNote": "一档下峰价=未分时价，任意谷电占比理论上都不吃亏；二三档需另算。",
+      "apply": {
+        "optional": true,
+        "effective": "办理成功后次月起执行（常见口径，请以国网上海确认）",
+        "lockPeriod": "待核对（本轮未检索到上海「一年内不得变更」明文；勿直接套用外省）",
+        "how": "网上国网 App 或拨打 95598 / 营业厅咨询办理"
+      },
+      "sources": [
+        {
+          "title": "上海市政府英文 Utilities 页居民 TOU 电价表",
+          "url": "https://english.shanghai.gov.cn/en-Business-PremisesUtilities-Utilities/20260818/7d4767035baf4263b8819080f33ac62e.html",
+          "fetchedAt": "2026-11-04"
+        },
+        {
+          "title": "买购网整理沪发改价管〔2021〕51号/〔2022〕50号居民峰谷时段",
+          "url": "https://www.maigoo.com/news/619993.html",
+          "fetchedAt": "2026-11-04"
+        },
+        {
+          "title": "澎湃政务转述上海市民价格信息指南峰谷时段（2025-06）",
+          "url": "https://www.thepaper.cn/newsDetail_forward_31041948",
+          "fetchedAt": "2026-11-04"
+        }
+      ]
+    }
+  ]
+}
