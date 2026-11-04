@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>峰谷电开不开？五城临界点测算 | 杭州南京济南郑州上海</title>
+  <meta name="description" content="对比未开峰谷与峰谷分时月电费：杭州、南京、济南、郑州、上海本地时段与电价。醒目提示次月生效、一年内通常难改回。结果仅供参考，以当地账单/国网为准。" />
+  <meta name="keywords" content="峰谷电,分时电价,临界点,杭州,南京,济南,郑州,上海,省电费" />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://fenggu.hpn6.com/" />
+  <meta property="og:title" content="峰谷电开不开？五城临界点测算" />
+  <meta property="og:description" content="按城市本地峰谷时段测算划不划算，不是全国统一晚10点谷价。" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://fenggu.hpn6.com/" />
+  <style>
+    :root {
+      --bg: #f4f6f8;
+      --card: #fff;
+      --ink: #1a1f2e;
+      --muted: #5c6578;
+      --line: #e4e8ef;
+      --brand: #0b6e4f;
+      --brand-soft: #e6f5ef;
+      --warn: #b45309;
+      --warn-bg: #fff7ed;
+      --danger: #b91c1c;
+      --ok: #047857;
+      --radius: 14px;
+      --shadow: 0 8px 24px rgba(26, 31, 46, 0.06);
+      --font: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      color: var(--ink);
+      background: linear-gradient(180deg, #eef7f3 0%, var(--bg) 220px);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 20px 16px 64px; }
+    header h1 {
+      font-size: 1.45rem;
+      margin: 0 0 8px;
+      letter-spacing: -0.02em;
+    }
+    .sub { color: var(--muted); font-size: 0.92rem; margin: 0 0 16px; }
+    .badge-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+    .badge {
+      font-size: 0.75rem;
+      background: var(--brand-soft);
+      color: var(--brand);
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+    .alert {
+      background: var(--warn-bg);
+      border: 1.5px solid #fdba74;
+      color: #7c2d12;
+      border-radius: var(--radius);
+      padding: 14px 14px 12px;
+      margin-bottom: 16px;
+      font-size: 0.9rem;
+    }
+    .alert strong { display: block; color: var(--warn); margin-bottom: 6px; font-size: 0.95rem; }
+    .alert ul { margin: 0; padding-left: 1.1em; }
+    .alert li { margin: 4px 0; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+    }
+    .card h2 {
+      font-size: 1.02rem;
+      margin: 0 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .step {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--brand); color: #fff;
+      font-size: 0.75rem; font-weight: 700;
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+    label { display: block; font-size: 0.86rem; color: var(--muted); margin-bottom: 6px; }
+    select, input[type="number"], input[type="text"], input[type="tel"] {
+      width: 100%;
+      padding: 12px 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      font-size: 1rem;
+      font-family: inherit;
+      background: #fff;
+      color: var(--ink);
+    }
+    select:focus, input:focus { outline: 2px solid #86efac; border-color: var(--brand); }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 520px) { .grid-2 { grid-template-columns: 1fr; } }
+    .hint { font-size: 0.8rem; color: var(--muted); margin-top: 6px; }
+    .city-meta {
+      margin-top: 12px;
+      padding: 12px;
+      background: #f8fafc;
+      border-radius: 10px;
+      font-size: 0.86rem;
+      color: var(--muted);
+    }
+    .city-meta b { color: var(--ink); }
+    .period-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .ptag {
+      font-size: 0.78rem;
+      padding: 4px 8px;
+      border-radius: 8px;
+      background: #eef2ff;
+      color: #3730a3;
+    }
+    .ptag.valley { background: #ecfdf5; color: #065f46; }
+    .appliances { display: grid; gap: 10px; }
+    .app-row {
+      display: grid;
+      grid-template-columns: 1fr 88px 72px;
+      gap: 8px;
+      align-items: end;
+    }
+    .app-row .name { font-size: 0.9rem; font-weight: 600; padding-bottom: 10px; }
+    .toggle-row {
+      display: flex; align-items: center; gap: 10px;
+      margin: 8px 0 4px; font-size: 0.9rem;
+    }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 100%;
+      padding: 14px 16px;
+      border: none;
+      border-radius: 12px;
+      background: var(--brand);
+      color: #fff;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .btn:active { transform: scale(0.99); }
+    .btn.secondary {
+      background: #fff;
+      color: var(--brand);
+      border: 1.5px solid var(--brand);
+      margin-top: 10px;
+    }
+    .results { display: none; }
+    .results.show { display: block; }
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .cmp {
+      border-radius: 12px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      background: #fafbfc;
+    }
+    .cmp .lbl { font-size: 0.8rem; color: var(--muted); }
+    .cmp .val { font-size: 1.35rem; font-weight: 800; margin-top: 4px; }
+    .cmp .subv { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+    .verdict {
+      margin-top: 12px;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+    }
+    .verdict.win { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+    .verdict.lose { background: #fef2f2; color: #7f1d1d; border: 1px solid #fecaca; }
+    .verdict.edge { background: #fffbeb; color: #78350f; border: 1px solid #fde68a; }
+    .meter {
+      margin-top: 12px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      height: 10px;
+      overflow: hidden;
+    }
+    .meter > span {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, #34d399, #059669);
+      width: 0%;
+      transition: width .35s ease;
+    }
+    .stats-bar {
+      display: flex; gap: 10px; flex-wrap: wrap;
+      font-size: 0.8rem; color: var(--muted);
+      margin: 8px 0 16px;
+    }
+    .stats-bar span {
+      background: #fff;
+      border: 1px solid var(--line);
+      padding: 6px 10px;
+      border-radius: 999px;
+    }
+    .lead-form .row { margin-bottom: 10px; }
+    footer {
+      margin-top: 28px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+      padding-top: 16px;
+    }
+    footer a { color: var(--brand); }
+    .pending { color: var(--warn); font-weight: 600; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); border: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="badge-row">
+        <span class="badge">独立测算工具 · 非国网官方</span>
+        <span class="badge">五城本地时段</span>
+      </div>
+      <h1>峰谷电开不开？城市临界点测算</h1>
+      <p class="sub">选城市 → 填用电量 → 对比「未开峰谷」与「峰谷分时」。每个城市用本地峰/谷时段与电价，不做全国统一晚 10 点谷价。</p>
+    </header>
+
+    <div class="alert" role="alert">
+      <strong>⚠️ 办理前必读（醒目提示）</strong>
+      <ul>
+        <li><b>次月生效</b>：多数地区申请成功后自<strong>次月</strong>起执行峰谷电价。</li>
+        <li><b>一年内通常难改回</b>：浙/苏/鲁等多为选定后 <strong>12 个月内不得变更</strong>；河南郑州官方表述为变更周期<strong>不少于三个月</strong>；上海锁定期本页标「待核对」。</li>
+        <li><b>仅供参考</b>：估算不等于账单。请以<strong>当地电费账单 / 国网 / 供电公司</strong>口径为准，政策可能调整。</li>
+      </ul>
+    </div>
+
+    <div class="stats-bar" aria-live="polite">
+      <span>本机测算次数：<b id="calcCount">0</b></span>
+      <span>本机留联数：<b id="leadCount">0</b></span>
+      <span>成功线：测算≥30 或 留联≥5</span>
+    </div>
+
+    <section class="card">
+      <h2><span class="step">1</span> 选择城市</h2>
+      <label for="city">城市（含浙/苏/鲁/豫 + 上海）</label>
+      <select id="city"></select>
+      <div class="city-meta" id="cityMeta">加载中…</div>
+      <div class="toggle-row" id="jinanSeasonRow" style="display:none">
+        <input type="checkbox" id="jinanHeating" />
+        <label for="jinanHeating" style="margin:0">济南：按采暖季时段/谷价测算（11月–次年3月）</label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span class="step">2</span> 用电量</h2>
+      <div class="grid-2">
+        <div>
+          <label for="monthlyKwh">月用电量（kWh）</label>
+          <input type="number" id="monthlyKwh" min="1" max="5000" step="1" value="280" inputmode="decimal" />
+          <p class="hint">可直接填账单月电量；也可下方用电器粗估后点「汇总」。 </p>
+        </div>
+        <div>
+          <label for="valleyShare">谷电占比（%），不确定可用默认</label>
+          <input type="number" id="valleyShare" min="0" max="100" step="1" value="35" inputmode="decimal" />
+          <p class="hint">上班族夜间多用热水器/洗衣，常见 25%–45%。可对照网上国网账单调。</p>
+        </div>
+      </div>
+
+      <details style="margin-top:14px">
+        <summary style="cursor:pointer;font-weight:600;color:var(--brand)">可选：用电器粗估月电量</summary>
+        <div class="appliances" style="margin-top:12px">
+          <div class="app-row">
+            <div class="name">空调</div>
+            <div>
+              <label for="acHours">日均小时</label>
+              <input type="number" id="acHours" min="0" max="24" step="0.5" value="4" />
+            </div>
+            <div>
+              <label for="acKw">功率kW</label>
+              <input type="number" id="acKw" min="0" max="10" step="0.1" value="1.5" />
+            </div>
+          </div>
+          <div class="app-row">
+            <div class="name">电热水器</div>
+            <div>
+              <label for="whHours">日均小时</label>
+              <input type="number" id="whHours" min="0" max="24" step="0.5" value="1.5" />
+            </div>
+            <div>
+              <label for="whKw">功率kW</label>
+              <input type="number" id="whKw" min="0" max="10" step="0.1" value="2" />
+            </div>
+          </div>
+          <div class="app-row">
+            <div class="name">其他（照明/冰箱等）</div>
+            <div>
+              <label for="otherDay">日均度</label>
+              <input type="number" id="otherDay" min="0" max="50" step="0.5" value="3" />
+            </div>
+            <div></div>
+          </div>
+          <div class="toggle-row">
+            <input type="checkbox" id="shiftValley" checked />
+            <label for="shiftValley" style="margin:0">假设热水器尽量放谷段（抬高谷占比）</label>
+          </div>
+          <button type="button" class="btn secondary" id="btnEstimate">用电器汇总到月电量</button>
+        </div>
+      </details>
+    </section>
+
+    <button type="button" class="btn" id="btnCalc">开始测算</button>
+
+    <section class="card results" id="results" aria-live="polite">
+      <h2><span class="step">3</span> 测算结果</h2>
+      <div class="compare">
+        <div class="cmp">
+          <div class="lbl">未开峰谷 · 估月费</div>
+          <div class="val" id="flatCost">—</div>
+          <div class="subv" id="flatDetail"></div>
+        </div>
+        <div class="cmp">
+          <div class="lbl">峰谷分时 · 估月费</div>
+          <div class="val" id="touCost">—</div>
+          <div class="subv" id="touDetail"></div>
+        </div>
+      </div>
+      <div class="verdict edge" id="verdict"></div>
+      <p class="hint" style="margin-top:10px">临界参考：谷电占比需约 ≥ <b id="critPct">—</b>% 才更划算（一档近似）。你当前：<b id="yourPct">—</b>%</p>
+      <div class="meter" aria-hidden="true"><span id="meterFill"></span></div>
+      <p class="hint" id="yearDiff"></p>
+      <p class="hint" id="applyNote"></p>
+    </section>
+
+    <section class="card results" id="leadCard">
+      <h2>帮我算 / 留个联系方式</h2>
+      <p class="hint" style="margin-top:0">成功线之一：愿意留联「帮算」≥5。信息仅存本机浏览器 localStorage，不会上传服务器（本页无后端）。</p>
+      <div class="lead-form">
+        <div class="row">
+          <label for="leadContact">微信或手机</label>
+          <input type="text" id="leadContact" maxlength="40" placeholder="微信号或 11 位手机" autocomplete="tel" />
+        </div>
+        <div class="row">
+          <label for="leadNote">补充（可选）</label>
+          <input type="text" id="leadNote" maxlength="80" placeholder="如：想核对账单峰谷占比" />
+        </div>
+        <button type="button" class="btn secondary" id="btnLead">提交留联</button>
+        <p class="hint" id="leadMsg"></p>
+      </div>
+    </section>
+
+    <footer>
+      <p><b>免责声明：</b>本工具为独立民间测算页，<b>不隶属、不代表国家电网或任何供电公司</b>。电价、时段、阶梯与办理规则以当地发改委/供电企业最新公示及你的电费账单为准。跨档、合表、煤改电、充电桩等特殊用户请单独咨询 95598。</p>
+      <p>数据抓取整理日期：<time datetime="2026-11-04">2026-11-04</time>（Asia/Shanghai）。详情见 <a href="./README.md">README</a> · <a href="./data/cities.json">cities.json</a></p>
+      <p>© 峰谷临界点测算 · fenggu.hpn6.com</p>
+    </footer>
+  </div>
+
+  <script>
+  (function () {
+    const STORAGE_CALC = "fenggu_calc_count_v1";
+    const STORAGE_LEADS = "fenggu_leads_v1";
+
+    /** Embedded snapshot (same as data/cities.json) for file:// / offline; fetch preferred when served. */
+    const EMBEDDED = {
+      meta: { fetchedAt: "2026-11-04" },
+      cities: [
+        {
+          id: "hangzhou", name: "杭州", province: "浙江", regionCode: "浙",
+          flat: { label: "未开峰谷（一档）", price: 0.538 },
+          tou: { periods: [
+            { name: "峰", hours: "08:00–22:00", hoursPerDay: 14, price: 0.568 },
+            { name: "谷", hours: "22:00–次日08:00", hoursPerDay: 10, price: 0.288 }
+          ]},
+          criticalValleyShare: 0.107,
+          criticalNote: "谷电占比约超过 10.7%（约 11%）通常更划算（一档近似）。",
+          apply: { effective: "申请成功后次月起执行", lockPeriod: "选定后一年内通常不得变更/停止", how: "网上国网「峰谷电变更」或营业厅" },
+          tiersNote: "年≤2760 一档；更高档峰谷同步加价。"
+        },
+        {
+          id: "nanjing", name: "南京", province: "江苏", regionCode: "苏",
+          flat: { label: "未开峰谷（一档）", price: 0.5283 },
+          tou: { periods: [
+            { name: "峰", hours: "08:00–21:00", hoursPerDay: 13, price: 0.5583 },
+            { name: "谷", hours: "21:00–次日08:00", hoursPerDay: 11, price: 0.3583 }
+          ]},
+          criticalValleyShare: 0.15,
+          criticalNote: "谷电占比约超过 15% 通常更划算（一档近似）。",
+          apply: { effective: "次月起执行（以办理为准）", lockPeriod: "一经选定，一年内不得变更", how: "网上国网「峰谷电变更」" },
+          tiersNote: "先峰谷、后阶梯；二/三档再加价。"
+        },
+        {
+          id: "jinan", name: "济南", province: "山东", regionCode: "鲁",
+          flat: { label: "未开峰谷（一档）", price: 0.5469 },
+          tou: {
+            periods: [
+              { name: "峰", hours: "08:00–22:00（非采暖）", hoursPerDay: 14, price: 0.5769 },
+              { name: "谷", hours: "22:00–次日08:00（非采暖）", hoursPerDay: 10, price: 0.3769 }
+            ],
+            seasons: {
+              nonHeating: { label: "非采暖季", periods: [
+                { name: "峰", hours: "08:00–22:00", hoursPerDay: 14, price: 0.5769 },
+                { name: "谷", hours: "22:00–次日08:00", hoursPerDay: 10, price: 0.3769 }
+              ]},
+              heating: { label: "采暖季", periods: [
+                { name: "峰", hours: "08:00–20:00", hoursPerDay: 12, price: 0.5769 },
+                { name: "谷", hours: "20:00–次日08:00", hoursPerDay: 12, price: 0.3469 }
+              ]}
+            }
+          },
+          criticalValleyShare: 0.15,
+          criticalNote: "非采暖季一档谷占比约超 15% 更划算；采暖季临界更低。",
+          apply: { effective: "申请次月起执行", lockPeriod: "1年内不作调整", how: "网上国网峰谷电变更，免费换表" },
+          tiersNote: "峰+0.03、谷−0.17（采暖季谷−0.20）。"
+        },
+        {
+          id: "zhengzhou", name: "郑州", province: "河南", regionCode: "豫",
+          flat: { label: "未开峰谷（一档）", price: 0.56 },
+          tou: { periods: [
+            { name: "峰", hours: "08:00–22:00", hoursPerDay: 14, price: 0.59 },
+            { name: "谷", hours: "22:00–次日08:00", hoursPerDay: 10, price: 0.44 }
+          ]},
+          criticalValleyShare: 0.2,
+          criticalNote: "一档近似：谷占比约超过 20% 更划算。",
+          apply: { effective: "以供电公司办理为准", lockPeriod: "变更周期不少于三个月（河南口径）", how: "网上国网或营业厅自愿申请" },
+          tiersNote: "在对应阶梯电价上峰+0.03、谷−0.12。"
+        },
+        {
+          id: "shanghai", name: "上海", province: "上海", regionCode: "沪",
+          pendingChecks: ["锁定期待核对"],
+          flat: { label: "未分时（一档）", price: 0.617 },
+          tou: { periods: [
+            { name: "峰", hours: "06:00–22:00", hoursPerDay: 16, price: 0.617 },
+            { name: "谷", hours: "22:00–次日06:00", hoursPerDay: 8, price: 0.307 }
+          ]},
+          criticalValleyShare: 0,
+          criticalNote: "一档峰价=未分时价，任意谷电理论上都不吃亏。",
+          apply: { effective: "常见为次月起（请以国网上海确认）", lockPeriod: "待核对（本轮未检索到上海「一年内不得变更」明文）", how: "网上国网或 95598" },
+          tiersNote: "二三档峰谷加价不同，高用电家庭请对照账单。"
+        }
+      ]
+    };
+
+    let cities = EMBEDDED.cities.slice();
+
+    function $(id) { return document.getElementById(id); }
+
+    function getCalcCount() {
+      return parseInt(localStorage.getItem(STORAGE_CALC) || "0", 10) || 0;
+    }
+    function setCalcCount(n) {
+      localStorage.setItem(STORAGE_CALC, String(n));
+      $("calcCount").textContent = n;
+    }
+    function getLeads() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_LEADS) || "[]"); }
+      catch (e) { return []; }
+    }
+    function setLeads(arr) {
+      localStorage.setItem(STORAGE_LEADS, JSON.stringify(arr));
+      $("leadCount").textContent = arr.length;
+    }
+
+    function currentCity() {
+      return cities.find(c => c.id === $("city").value) || cities[0];
+    }
+
+    function activePeriods(city) {
+      if (city.id === "jinan" && city.tou.seasons) {
+        const heating = $("jinanHeating").checked;
+        return heating ? city.tou.seasons.heating.periods : city.tou.seasons.nonHeating.periods;
+      }
+      return city.tou.periods;
+    }
+
+    function criticalShare(city, periods) {
+      const F = city.flat.price;
+      const peak = periods.find(p => p.name === "峰");
+      const valley = periods.find(p => p.name === "谷");
+      if (!peak || !valley) return city.criticalValleyShare;
+      const denom = valley.price - peak.price;
+      if (Math.abs(denom) < 1e-9) return 0;
+      const g = (F - peak.price) / denom;
+      return Math.max(0, Math.min(1, g));
+    }
+
+    function renderCityMeta() {
+      const city = currentCity();
+      const periods = activePeriods(city);
+      $("jinanSeasonRow").style.display = city.id === "jinan" ? "flex" : "none";
+      const tags = periods.map(p =>
+        `<span class="ptag ${p.name === "谷" ? "valley" : ""}">${p.name} ${p.hours} · ${p.price.toFixed(4)} 元/度</span>`
+      ).join("");
+      const pending = (city.pendingChecks && city.pendingChecks.length)
+        ? `<p class="pending">待核对：${city.pendingChecks.join("；")}</p>` : "";
+      $("cityMeta").innerHTML =
+        `<div><b>${city.name}</b>（${city.province}）· 未开峰谷一档 <b>${city.flat.price}</b> 元/度</div>` +
+        `<div class="period-tags">${tags}</div>` +
+        `<p style="margin:8px 0 0">${city.criticalNote || ""}</p>` +
+        `<p style="margin:6px 0 0">办理：${city.apply.how} · ${city.apply.effective} · <b>${city.apply.lockPeriod}</b></p>` +
+        `<p style="margin:6px 0 0">${city.tiersNote || ""}</p>` + pending;
+      // Default valley share hint by city hours
+      const valley = periods.find(p => p.name === "谷");
+      if (valley && !$("valleyShare").dataset.touched) {
+        // keep user value unless first load — soft default 30-40
+      }
+    }
+
+    function estimateFromAppliances() {
+      const ac = (parseFloat($("acHours").value) || 0) * (parseFloat($("acKw").value) || 0);
+      const wh = (parseFloat($("whHours").value) || 0) * (parseFloat($("whKw").value) || 0);
+      const other = parseFloat($("otherDay").value) || 0;
+      const day = ac + wh + other;
+      const month = Math.round(day * 30);
+      $("monthlyKwh").value = month;
+      if ($("shiftValley").checked && month > 0) {
+        const whShare = (wh * 30) / month;
+        const base = 0.22;
+        const boosted = Math.min(0.7, base + whShare * 0.85);
+        $("valleyShare").value = Math.round(boosted * 100);
+        $("valleyShare").dataset.touched = "1";
+      }
+    }
+
+    function calc() {
+      const city = currentCity();
+      const periods = activePeriods(city);
+      const peak = periods.find(p => p.name === "峰");
+      const valley = periods.find(p => p.name === "谷");
+      const kwh = Math.max(0, parseFloat($("monthlyKwh").value) || 0);
+      let g = (parseFloat($("valleyShare").value) || 0) / 100;
+      g = Math.max(0, Math.min(1, g));
+
+      if (kwh <= 0) {
+        alert("请填写有效的月用电量");
+        return;
+      }
+
+      const peakKwh = kwh * (1 - g);
+      const valleyKwh = kwh * g;
+      const flatCost = kwh * city.flat.price;
+      const touCost = peakKwh * peak.price + valleyKwh * valley.price;
+      const monthDiff = flatCost - touCost;
+      const yearDiff = monthDiff * 12;
+      const crit = criticalShare(city, periods);
+
+      $("flatCost").textContent = flatCost.toFixed(1) + " 元";
+      $("flatDetail").textContent = `${kwh} 度 × ${city.flat.price} 元`;
+      $("touCost").textContent = touCost.toFixed(1) + " 元";
+      $("touDetail").textContent = `峰 ${peakKwh.toFixed(0)}×${peak.price} + 谷 ${valleyKwh.toFixed(0)}×${valley.price}`;
+
+      const verdict = $("verdict");
+      verdict.className = "verdict";
+      if (monthDiff > 3) {
+        verdict.classList.add("win");
+        verdict.innerHTML = `<b>更划算倾向：开峰谷。</b>按你填的结构，大约每月省 <b>${monthDiff.toFixed(1)}</b> 元，年差约 <b>${yearDiff.toFixed(0)}</b> 元。请仍对照真实账单峰谷占比，并注意次月生效与改回限制。`;
+      } else if (monthDiff < -3) {
+        verdict.classList.add("lose");
+        verdict.innerHTML = `<b>更划算倾向：暂不开。</b>按当前谷占比，开峰谷约每月多花 <b>${(-monthDiff).toFixed(1)}</b> 元。可尝试把热水器/洗衣挪到谷段后再测；开了通常短期内难改回。`;
+      } else {
+        verdict.classList.add("edge");
+        verdict.innerHTML = `<b>接近临界。</b>月差约 <b>${monthDiff.toFixed(1)}</b> 元，建议用网上国网近 3–6 个月真实峰谷占比再算，并读清当地改回规则后再决定。`;
+      }
+
+      $("critPct").textContent = (crit * 100).toFixed(1);
+      $("yourPct").textContent = (g * 100).toFixed(0);
+      const fill = crit <= 0 ? 100 : Math.min(100, (g / Math.max(crit, 0.01)) * 100);
+      $("meterFill").style.width = fill + "%";
+      $("yearDiff").textContent = `年差估算（月差×12）：${yearDiff >= 0 ? "约省" : "约多花"} ${Math.abs(yearDiff).toFixed(0)} 元（未计阶梯跨档与季节变化）。`;
+      $("applyNote").innerHTML = `办理提示：${city.apply.effective}；限制：<b>${city.apply.lockPeriod}</b>。方式：${city.apply.how}。`;
+
+      $("results").classList.add("show");
+      $("leadCard").classList.add("show");
+
+      setCalcCount(getCalcCount() + 1);
+      $("results").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function submitLead() {
+      const contact = ($("leadContact").value || "").trim();
+      if (!contact || contact.length < 5) {
+        $("leadMsg").textContent = "请填写有效的微信或手机。";
+        return;
+      }
+      const leads = getLeads();
+      leads.push({
+        at: new Date().toISOString(),
+        contact: contact,
+        note: ($("leadNote").value || "").trim(),
+        city: $("city").value,
+        kwh: $("monthlyKwh").value,
+        valleyShare: $("valleyShare").value
+      });
+      setLeads(leads);
+      $("leadMsg").textContent = "已记录到本机（共 " + leads.length + " 条）。本页无后端，部署后若需汇总请另接表单服务。";
+      $("leadContact").value = "";
+      $("leadNote").value = "";
+    }
+
+    function fillSelect() {
+      const sel = $("city");
+      sel.innerHTML = cities.map(c =>
+        `<option value="${c.id}">${c.name}（${c.regionCode || c.province}）</option>`
+      ).join("");
+    }
+
+    function boot() {
+      fillSelect();
+      setCalcCount(getCalcCount());
+      setLeads(getLeads());
+      renderCityMeta();
+      $("city").addEventListener("change", renderCityMeta);
+      $("jinanHeating").addEventListener("change", renderCityMeta);
+      $("valleyShare").addEventListener("input", () => { $("valleyShare").dataset.touched = "1"; });
+      $("btnEstimate").addEventListener("click", estimateFromAppliances);
+      $("btnCalc").addEventListener("click", calc);
+      $("btnLead").addEventListener("click", submitLead);
+    }
+
+    fetch("./data/cities.json")
+      .then(r => (r.ok ? r.json() : Promise.reject()))
+      .then(data => {
+        if (data && Array.isArray(data.cities) && data.cities.length) {
+          cities = data.cities;
+        }
+      })
+      .catch(() => {})
+      .finally(boot);
+  })();
+  </script>
+</body>
+</html>
