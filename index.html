@@ -217,6 +217,7 @@
       overflow: hidden; clip: rect(0,0,0,0); border: 0;
     }
   </style>
+  <script src="https://hpn6.com/t/hpn6-stats.js" data-site="fenggu" defer></script>
 </head>
 <body>
   <div class="wrap">
@@ -337,7 +338,7 @@
 
     <section class="card results" id="leadCard">
       <h2>帮我算 / 留个联系方式</h2>
-      <p class="hint" style="margin-top:0">成功线之一：愿意留联「帮算」≥5。信息仅存本机浏览器 localStorage，不会上传服务器（本页无后端）。</p>
+      <p class="hint" style="margin-top:0">成功线之一：愿意留联「帮算」≥5。联系方式只存在你的浏览器里，不会上传。访问与测算/留联次数会匿名汇总，不含联系方式。</p>
       <div class="lead-form">
         <div class="row">
           <label for="leadContact">微信或手机</label>
@@ -576,6 +577,7 @@
       $("leadCard").classList.add("show");
 
       setCalcCount(getCalcCount() + 1);
+      if (window.hpn6track) window.hpn6track("calc");
       $("results").scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
@@ -595,6 +597,7 @@
         valleyShare: $("valleyShare").value
       });
       setLeads(leads);
+      if (window.hpn6track) window.hpn6track("lead");
       $("leadMsg").textContent = "已记录到本机（共 " + leads.length + " 条）。本页无后端，部署后若需汇总请另接表单服务。";
       $("leadContact").value = "";
       $("leadNote").value = "";
